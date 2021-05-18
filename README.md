@@ -1,2 +1,3 @@
 # tompero-android
-![Alt text](https://github.com/leonardoamurca/tompero-android/blob/master/video.gif "App demo")
+
+Projeto para a disciplina de desenvolvimento de aplicativos móveis.
