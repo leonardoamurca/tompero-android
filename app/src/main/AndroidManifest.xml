@@ -3,12 +3,19 @@
     package="com.leomurca.tompero">
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Tompero">
+        <activity
+            android:name=".ui.AddRecipeActivity"
+            android:theme="@style/Theme.Tompero.NoActionBar" />
+        <activity
+            android:name=".ui.RecipeActivity"
+            android:theme="@style/Theme.Tompero.NoActionBar" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

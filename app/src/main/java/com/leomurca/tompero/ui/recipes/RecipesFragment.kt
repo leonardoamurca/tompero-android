@@ -1,30 +1,63 @@
 package com.leomurca.tompero.ui.recipes
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.leomurca.tompero.R
+import com.leomurca.tompero.ui.RecipeActivity
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 class RecipesFragment : Fragment() {
 
-    private lateinit var recipesViewModel: RecipesViewModel
+    private val recipesViewModel: RecipesViewModel by inject()
+    private lateinit var recipeAdapter: RecipeAdapter
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
-        recipesViewModel = ViewModelProvider(this).get(RecipesViewModel::class.java)
 
-        val root = inflater.inflate(R.layout.fragment_recipes, container, false)
-        val textView: TextView = root.findViewById(R.id.text_recipes)
 
-        recipesViewModel.text.observe(viewLifecycleOwner, { textView.text = it })
+        return inflater.inflate(R.layout.fragment_recipes, container, false)
+    }
 
-        return root
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        recipeAdapter = RecipeAdapter { recipe ->
+            val intent = Intent(context, RecipeActivity::class.java)
+            intent.putExtra("recipe", recipe)
+            startActivity(intent)
+        }
+
+        view.findViewById<RecyclerView>(R.id.recipesRecyclerView).let {
+            it.layoutManager = LinearLayoutManager(
+                this@RecipesFragment.activity,
+                LinearLayoutManager.VERTICAL,
+                false
+            )
+            it.adapter = recipeAdapter
+        }
+
+        recipesViewModel.recipes.observe(viewLifecycleOwner, {
+            recipeAdapter.setRecipes(it)
+        })
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        recipesViewModel.viewModelScope.launch {
+            recipesViewModel.init()
+        }
     }
 }
